@@ -1,10 +1,10 @@
-
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import EventCard from '../components/EventCard';
 import LiveEventCard from '../components/LiveEventCard';
 import PremiereCard from '../components/PremiereCard';
 import SeatGrid from '../components/SeatGrid';
+import LoginSignupModal from '../components/LoginSignupModal';
 import { 
   events, 
   liveEventCategories, 
@@ -22,6 +22,33 @@ const Index = () => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedShowtimeIndex, setSelectedShowtimeIndex] = useState<number>(-1);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  // Filter events based on search query
+  const filteredEvents = useMemo(() => {
+    if (!searchQuery.trim()) return events;
+    return events.filter(event => 
+      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.genre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  const filteredComedyEvents = useMemo(() => {
+    if (!searchQuery.trim()) return comedyEvents;
+    return comedyEvents.filter(event => 
+      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.genre.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  const filteredPopularEvents = useMemo(() => {
+    if (!searchQuery.trim()) return popularEvents;
+    return popularEvents.filter(event => 
+      event.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
 
   const handleViewDetails = (eventId: string) => {
     const event = events.find(e => e.id === eventId);
@@ -71,79 +98,123 @@ const Index = () => {
     setSelectedEvent(null);
     setSelectedShowtimeIndex(-1);
     setSelectedSeats([]);
+    setSearchQuery('');
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleSignInClick = () => {
+    setIsLoginModalOpen(true);
   };
 
   const renderHomePage = () => (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Banner */}
-      <div className="w-full bg-gray-200">
-        <img
-          src="https://images.unsplash.com/photo-1489599063528-a0ba927cea8b?w=1200&h=400&fit=crop"
-          alt="Promotional Banner"
-          className="w-full h-80 object-cover"
-        />
+      <div className="w-full bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black opacity-40"></div>
+        <div className="relative z-10 flex items-center justify-center h-80 px-5">
+          <div className="text-center text-white">
+            <h1 className="text-5xl font-bold mb-4 text-shadow-lg">
+              Experience Entertainment
+            </h1>
+            <p className="text-xl mb-6 text-shadow">
+              Book your favorite movies, events, and shows
+            </p>
+            <button className="bg-[#f84464] hover:bg-[#d83454] text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-lg">
+              Explore Now
+            </button>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </div>
 
-      {/* Live Events Section */}
-      <section className="max-w-6xl mx-auto px-5 py-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">The Best Of Live Events</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {liveEventCategories.map((category, index) => (
-            <LiveEventCard key={index} category={category} />
-          ))}
+      {/* Search Results Summary */}
+      {searchQuery && (
+        <div className="max-w-6xl mx-auto px-5 py-4">
+          <p className="text-gray-600">
+            Showing results for "<span className="font-semibold">{searchQuery}</span>"
+          </p>
         </div>
-      </section>
+      )}
+
+      {/* Live Events Section */}
+      {!searchQuery && (
+        <section className="max-w-6xl mx-auto px-5 py-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">The Best Of Live Events</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {liveEventCategories.map((category, index) => (
+              <LiveEventCard key={index} category={category} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Recommended Movies */}
       <section className="max-w-6xl mx-auto px-5 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Recommended Movies</h2>
-          <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>
+          <h2 className="text-2xl font-bold text-gray-900">
+            {searchQuery ? 'Movies' : 'Recommended Movies'}
+          </h2>
+          {!searchQuery && <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>}
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {events.map(event => (
-            <EventCard 
-              key={event.id} 
-              event={event} 
-              onViewDetails={handleViewDetails} 
-            />
-          ))}
-        </div>
+        {filteredEvents.length > 0 ? (
+          <div className="flex gap-4 overflow-x-auto pb-4">
+            {filteredEvents.map(event => (
+              <EventCard 
+                key={event.id} 
+                event={event} 
+                onViewDetails={handleViewDetails} 
+              />
+            ))}
+          </div>
+        ) : searchQuery ? (
+          <p className="text-gray-500 text-center py-8">No movies found matching your search.</p>
+        ) : null}
       </section>
 
       {/* Premieres */}
-      <section className="max-w-6xl mx-auto px-5 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Premieres</h2>
-            <p className="text-gray-600 text-sm">Brand new releases every Friday</p>
+      {!searchQuery && (
+        <section className="max-w-6xl mx-auto px-5 py-8">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Premieres</h2>
+              <p className="text-gray-600 text-sm">Brand new releases every Friday</p>
+            </div>
+            <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>
           </div>
-          <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>
-        </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {premieres.map((premiere, index) => (
-            <PremiereCard key={index} premiere={premiere} />
-          ))}
-        </div>
-      </section>
+          <div className="flex gap-4 overflow-x-auto pb-4">
+            {premieres.map((premiere, index) => (
+              <PremiereCard key={index} premiere={premiere} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Laughter Therapy */}
       <section className="bg-gray-100 py-8">
         <div className="max-w-6xl mx-auto px-5">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Laughter Therapy</h2>
-            <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {searchQuery ? 'Comedy Shows' : 'Laughter Therapy'}
+            </h2>
+            {!searchQuery && <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>}
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4">
-            {comedyEvents.map(event => (
-              <EventCard 
-                key={event.id} 
-                event={event} 
-                onViewDetails={handleViewDetails}
-                variant="comedy"
-              />
-            ))}
-          </div>
+          {filteredComedyEvents.length > 0 ? (
+            <div className="flex gap-4 overflow-x-auto pb-4">
+              {filteredComedyEvents.map(event => (
+                <EventCard 
+                  key={event.id} 
+                  event={event} 
+                  onViewDetails={handleViewDetails}
+                  variant="comedy"
+                />
+              ))}
+            </div>
+          ) : searchQuery ? (
+            <p className="text-gray-500 text-center py-8">No comedy shows found matching your search.</p>
+          ) : null}
         </div>
       </section>
 
@@ -151,18 +222,22 @@ const Index = () => {
       <section className="max-w-6xl mx-auto px-5 py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-900">Popular Events</h2>
-          <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>
+          {!searchQuery && <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>}
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4">
-          {popularEvents.map(event => (
-            <EventCard 
-              key={event.id} 
-              event={event} 
-              onViewDetails={handleViewDetails}
-              variant="popular"
-            />
-          ))}
-        </div>
+        {filteredPopularEvents.length > 0 ? (
+          <div className="flex gap-4 overflow-x-auto pb-4">
+            {filteredPopularEvents.map(event => (
+              <EventCard 
+                key={event.id} 
+                event={event} 
+                onViewDetails={handleViewDetails}
+                variant="popular"
+              />
+            ))}
+          </div>
+        ) : searchQuery ? (
+          <p className="text-gray-500 text-center py-8">No popular events found matching your search.</p>
+        ) : null}
       </section>
     </div>
   );
@@ -292,12 +367,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header onHomeClick={handleGoHome} />
+      <Header 
+        onHomeClick={handleGoHome} 
+        onSearch={handleSearch}
+        onSignInClick={handleSignInClick}
+        searchQuery={searchQuery}
+      />
       
       {currentView === 'home' && renderHomePage()}
       {currentView === 'details' && renderEventDetails()}
       {currentView === 'seats' && renderSeatSelection()}
       {currentView === 'confirmation' && renderConfirmation()}
+      
+      <LoginSignupModal 
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
       
       <footer className="bg-gray-800 text-white text-center py-4 mt-auto">
         <p>&copy; 2025 BookMyTicket</p>

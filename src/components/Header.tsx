@@ -4,9 +4,16 @@ import { Search, MapPin, Menu } from 'lucide-react';
 
 interface HeaderProps {
   onHomeClick: () => void;
+  onSearch: (query: string) => void;
+  onSignInClick: () => void;
+  searchQuery: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ onHomeClick }) => {
+const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, searchQuery }) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onSearch(e.target.value);
+  };
+
   return (
     <>
       <header className="bg-[#333237] text-white px-5 py-3 flex justify-between items-center h-16">
@@ -23,6 +30,8 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick }) => {
               type="text"
               placeholder="Search for Movies, Events, Plays, Sports and Activities"
               className="flex-1 text-black text-sm outline-none"
+              value={searchQuery}
+              onChange={handleSearchChange}
             />
           </div>
         </div>
@@ -32,7 +41,10 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick }) => {
             <MapPin className="w-4 h-4 text-gray-300" />
             <span className="text-gray-300 text-sm">Guwahati</span>
           </div>
-          <button className="bg-[#f84464] hover:bg-[#d83454] px-4 py-2 rounded text-sm font-medium transition-colors">
+          <button 
+            onClick={onSignInClick}
+            className="bg-[#f84464] hover:bg-[#d83454] px-4 py-2 rounded text-sm font-medium transition-colors"
+          >
             Sign In
           </button>
           <button className="p-2">
