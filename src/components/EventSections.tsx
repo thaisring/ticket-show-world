@@ -3,15 +3,15 @@ import React from 'react';
 import EventCard from './EventCard';
 import LiveEventCard from './LiveEventCard';
 import PremiereCard from './PremiereCard';
-import { Event } from '../data/events';
+import { Event, ComedyEvent, PopularEvent, LiveEventCategory } from '../data/events';
 
 interface EventSectionsProps {
   searchQuery: string;
   selectedCategory: 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
   filteredEvents: Event[];
-  filteredComedyEvents: Event[];
-  filteredPopularEvents: Event[];
-  liveEventCategories: any[];
+  filteredComedyEvents: ComedyEvent[];
+  filteredPopularEvents: PopularEvent[];
+  liveEventCategories: LiveEventCategory[];
   premieres: any[];
   onViewDetails: (eventId: string) => void;
 }
