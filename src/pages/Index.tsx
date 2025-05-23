@@ -5,6 +5,7 @@ import LiveEventCard from '../components/LiveEventCard';
 import PremiereCard from '../components/PremiereCard';
 import SeatGrid from '../components/SeatGrid';
 import LoginSignupModal from '../components/LoginSignupModal';
+import AppSidebar from '../components/AppSidebar';
 import { 
   events, 
   liveEventCategories, 
@@ -14,8 +15,10 @@ import {
   Event,
   Seat
 } from '../data/events';
+import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
 type ViewType = 'home' | 'details' | 'seats' | 'confirmation';
+type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<ViewType>('home');
@@ -24,6 +27,7 @@ const Index = () => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
 
   // Filter events based on search query
   const filteredEvents = useMemo(() => {
@@ -100,6 +104,7 @@ const Index = () => {
     setSelectedShowtimeIndex(-1);
     setSelectedSeats([]);
     setSearchQuery('');
+    setSelectedCategory('all');
   };
 
   const handleSearch = (query: string) => {
@@ -108,6 +113,22 @@ const Index = () => {
 
   const handleSignInClick = () => {
     setIsLoginModalOpen(true);
+  };
+
+  const handleCategorySelect = (category: CategoryType) => {
+    setSelectedCategory(category);
+  };
+
+  const getCategoryTitle = () => {
+    switch (selectedCategory) {
+      case 'movies': return 'Movies';
+      case 'stream': return 'Streaming Shows';
+      case 'events': return 'Events';
+      case 'plays': return 'Plays';
+      case 'sports': return 'Sports';
+      case 'activities': return 'Activities';
+      default: return 'All Entertainment';
+    }
   };
 
   const renderHomePage = () => (
@@ -367,28 +388,33 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header 
-        onHomeClick={handleGoHome} 
-        onSearch={handleSearch}
-        onSignInClick={handleSignInClick}
-        searchQuery={searchQuery}
-      />
-      
-      {currentView === 'home' && renderHomePage()}
-      {currentView === 'details' && renderEventDetails()}
-      {currentView === 'seats' && renderSeatSelection()}
-      {currentView === 'confirmation' && renderConfirmation()}
-      
-      <LoginSignupModal 
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
-      
-      <footer className="bg-gray-800 text-white text-center py-4 mt-auto">
-        <p>&copy; 2025 BookMyTicket</p>
-      </footer>
-    </div>
+    <SidebarProvider>
+      <div className="min-h-screen bg-gray-50 flex w-full">
+        <AppSidebar onCategorySelect={handleCategorySelect} selectedCategory={selectedCategory} />
+        <SidebarInset>
+          <Header 
+            onHomeClick={handleGoHome} 
+            onSearch={handleSearch}
+            onSignInClick={handleSignInClick}
+            searchQuery={searchQuery}
+          />
+          
+          {currentView === 'home' && renderHomePage()}
+          {currentView === 'details' && renderEventDetails()}
+          {currentView === 'seats' && renderSeatSelection()}
+          {currentView === 'confirmation' && renderConfirmation()}
+          
+          <LoginSignupModal 
+            isOpen={isLoginModalOpen}
+            onClose={() => setIsLoginModalOpen(false)}
+          />
+          
+          <footer className="bg-gray-800 text-white text-center py-4 mt-auto">
+            <p>&copy; 2025 BookMyTicket</p>
+          </footer>
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
   );
 };
 
