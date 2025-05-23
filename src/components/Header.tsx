@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin, User, Menu } from 'lucide-react';
+import { Search, MapPin, User } from 'lucide-react';
 import { SidebarTrigger } from './ui/sidebar';
 
 interface HeaderProps {
@@ -30,19 +30,19 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, s
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Left side */}
-            <div className="flex items-center space-x-4">
-              <SidebarTrigger className="text-white hover:bg-gray-700" />
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <SidebarTrigger className="text-white hover:bg-gray-700 flex-shrink-0" />
               <button 
                 onClick={onHomeClick}
-                className="text-2xl font-bold hover:text-gray-300 transition-colors"
+                className="text-xl sm:text-2xl font-bold hover:text-gray-300 transition-colors truncate"
               >
                 BookMyTicket
               </button>
               
-              {/* Search Bar */}
-              <div className="hidden md:flex items-center bg-white rounded-md px-3 py-2 min-w-96">
-                <Search className="h-4 w-4 text-gray-400 mr-2" />
-                <form onSubmit={handleSearchSubmit} className="flex-1">
+              {/* Search Bar - Hidden on mobile, shown on md+ */}
+              <div className="hidden md:flex items-center bg-white rounded-md px-3 py-2 min-w-0 flex-1 max-w-md lg:max-w-lg">
+                <Search className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                <form onSubmit={handleSearchSubmit} className="flex-1 min-w-0">
                   <input
                     type="text"
                     placeholder="Search for Movies, Events, Plays, Sports and Activities"
@@ -55,25 +55,39 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, s
             </div>
 
             {/* Right side */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Location */}
-              <div className="flex items-center space-x-1 text-sm cursor-pointer hover:text-gray-300">
-                <MapPin className="h-4 w-4" />
-                <span>Guwahati</span>
+              <div className="hidden sm:flex items-center space-x-1 text-sm cursor-pointer hover:text-gray-300">
+                <MapPin className="h-4 w-4 flex-shrink-0" />
+                <span className="hidden lg:inline">Guwahati</span>
               </div>
 
               {/* Sign In Button */}
               <button
                 onClick={onSignInClick}
-                className="bg-[#f84464] hover:bg-[#d83454] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="bg-[#f84464] hover:bg-[#d83454] text-white px-3 py-2 sm:px-4 rounded-md text-sm font-medium transition-colors flex-shrink-0"
               >
-                Sign In
+                <span className="hidden sm:inline">Sign In</span>
+                <User className="h-4 w-4 sm:hidden" />
               </button>
+            </div>
+          </div>
+        </div>
 
-              {/* Menu Button */}
-              <button className="text-white hover:text-gray-300">
-                <Menu className="h-6 w-6" />
-              </button>
+        {/* Mobile Search Bar */}
+        <div className="md:hidden border-t border-gray-600">
+          <div className="max-w-7xl mx-auto px-4 py-3">
+            <div className="flex items-center bg-white rounded-md px-3 py-2">
+              <Search className="h-4 w-4 text-gray-400 mr-2" />
+              <form onSubmit={handleSearchSubmit} className="flex-1">
+                <input
+                  type="text"
+                  placeholder="Search Movies, Events, Plays..."
+                  value={localSearchQuery}
+                  onChange={handleSearchChange}
+                  className="w-full outline-none text-gray-700 text-sm"
+                />
+              </form>
             </div>
           </div>
         </div>
@@ -83,15 +97,15 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, s
       <nav className="bg-[#1f2533] text-gray-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-12">
-            <div className="flex space-x-8">
-              <a href="#" className="text-sm hover:text-white transition-colors">Movies</a>
-              <a href="#" className="text-sm hover:text-white transition-colors">Stream</a>
-              <a href="#" className="text-sm hover:text-white transition-colors">Events</a>
-              <a href="#" className="text-sm hover:text-white transition-colors">Plays</a>
-              <a href="#" className="text-sm hover:text-white transition-colors">Sports</a>
-              <a href="#" className="text-sm hover:text-white transition-colors">Activities</a>
+            <div className="flex space-x-4 sm:space-x-8 overflow-x-auto">
+              <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Movies</a>
+              <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Stream</a>
+              <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Events</a>
+              <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Plays</a>
+              <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Sports</a>
+              <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Activities</a>
             </div>
-            <div className="hidden md:flex space-x-6">
+            <div className="hidden lg:flex space-x-6">
               <a href="#" className="text-sm hover:text-white transition-colors">ListYourShow</a>
               <a href="#" className="text-sm hover:text-white transition-colors">Corporates</a>
               <a href="#" className="text-sm hover:text-white transition-colors">Offers</a>
