@@ -39,7 +39,8 @@ const Index = () => {
     if (!searchQuery.trim()) return comedyEvents;
     return comedyEvents.filter(event => 
       event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.genre.toLowerCase().includes(searchQuery.toLowerCase())
+      event.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      event.performer.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery]);
 
