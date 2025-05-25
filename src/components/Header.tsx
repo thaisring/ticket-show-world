@@ -28,7 +28,7 @@ const popularCities = [
 const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, searchQuery }) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [showLocationSearch, setShowLocationSearch] = useState(false);
-  const [selectedCity, setSelectedCity] = useState('Guwahati');
+  const [selectedCity, setSelectedCity] = useState<string | null>(null);
   const [locationSearchQuery, setLocationSearchQuery] = useState('');
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -205,7 +205,9 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, searchQuery }) =
                     onClick={handleLocationClick}
                   >
                     <MapPin className="h-4 w-4 flex-shrink-0" />
-                    <span className="hidden lg:inline">{selectedCity}</span>
+                    <span className="hidden lg:inline">
+                      {selectedCity || "Your Location"}
+                    </span>
                   </div>
                 )}
               </div>
