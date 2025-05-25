@@ -1,17 +1,22 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin, User } from 'lucide-react';
+import { Search, MapPin, User, LogOut } from 'lucide-react';
 import { SidebarTrigger } from './ui/sidebar';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Button } from './ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 interface HeaderProps {
   onHomeClick: () => void;
   onSearch: (query: string) => void;
-  onSignInClick: () => void;
   searchQuery: string;
 }
 
-const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, searchQuery }) => {
+const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, searchQuery }) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +26,25 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, s
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalSearchQuery(e.target.value);
     onSearch(e.target.value);
+  };
+
+  const handleAuthClick = () => {
+    if (user) {
+      signOut();
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  const getUserInitials = () => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name
+        .split(' ')
+        .map((name: string) => name[0])
+        .join('')
+        .toUpperCase();
+    }
+    return user?.email?.[0]?.toUpperCase() || 'U';
   };
 
   return (
@@ -62,14 +86,37 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, onSignInClick, s
                 <span className="hidden lg:inline">Guwahati</span>
               </div>
 
-              {/* Sign In Button */}
-              <button
-                onClick={onSignInClick}
-                className="bg-[#f84464] hover:bg-[#d83454] text-white px-3 py-2 sm:px-4 rounded-md text-sm font-medium transition-colors flex-shrink-0"
-              >
-                <span className="hidden sm:inline">Sign In</span>
-                <User className="h-4 w-4 sm:hidden" />
-              </button>
+              {/* User Section */}
+              {user ? (
+                <div className="flex items-center space-x-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={user.user_metadata?.avatar_url} />
+                    <AvatarFallback className="bg-[#f84464] text-white text-xs">
+                      {getUserInitials()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden sm:inline text-sm">
+                    {user.user_metadata?.full_name || user.email}
+                  </span>
+                  <Button
+                    onClick={handleAuthClick}
+                    variant="ghost"
+                    size="sm"
+                    className="text-white hover:bg-gray-700"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span className="hidden sm:inline ml-1">Sign Out</span>
+                  </Button>
+                </div>
+              ) : (
+                <Button
+                  onClick={handleAuthClick}
+                  className="bg-[#f84464] hover:bg-[#d83454] text-white px-3 py-2 sm:px-4 rounded-md text-sm font-medium transition-colors flex-shrink-0"
+                >
+                  <span className="hidden sm:inline">Sign In</span>
+                  <User className="h-4 w-4 sm:hidden" />
+                </Button>
+              )}
             </div>
           </div>
         </div>

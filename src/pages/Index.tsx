@@ -1,7 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
-import LoginSignupModal from '../components/LoginSignupModal';
 import AppSidebar from '../components/AppSidebar';
 import HomePage from './HomePage';
 import EventDetailsPage from './EventDetailsPage';
@@ -26,7 +25,6 @@ const Index = () => {
   const [selectedShowtimeIndex, setSelectedShowtimeIndex] = useState<number>(-1);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
 
   // Filter events based on search query
@@ -111,10 +109,6 @@ const Index = () => {
     setSearchQuery(query);
   };
 
-  const handleSignInClick = () => {
-    setIsLoginModalOpen(true);
-  };
-
   const handleCategorySelect = (category: CategoryType) => {
     setSelectedCategory(category);
   };
@@ -175,16 +169,10 @@ const Index = () => {
           <Header 
             onHomeClick={handleGoHome} 
             onSearch={handleSearch}
-            onSignInClick={handleSignInClick}
             searchQuery={searchQuery}
           />
           
           {renderCurrentView()}
-          
-          <LoginSignupModal 
-            isOpen={isLoginModalOpen}
-            onClose={() => setIsLoginModalOpen(false)}
-          />
           
           <footer className="bg-gray-800 text-white text-center py-4 mt-auto">
             <p>&copy; 2025 BookMyTicket</p>
