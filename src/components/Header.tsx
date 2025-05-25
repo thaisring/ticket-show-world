@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, MapPin, User, LogOut } from 'lucide-react';
+import { Search, MapPin, User, LogOut, X } from 'lucide-react';
 import { SidebarTrigger } from './ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +15,9 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, searchQuery }) => {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [showLocationSearch, setShowLocationSearch] = useState(false);
+  const [selectedCity, setSelectedCity] = useState('Guwahati');
+  const [locationSearchQuery, setLocationSearchQuery] = useState('');
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -26,6 +29,28 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, searchQuery }) =
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalSearchQuery(e.target.value);
     onSearch(e.target.value);
+  };
+
+  const handleLocationClick = () => {
+    setShowLocationSearch(true);
+  };
+
+  const handleLocationSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (locationSearchQuery.trim()) {
+      setSelectedCity(locationSearchQuery.trim());
+      setShowLocationSearch(false);
+      setLocationSearchQuery('');
+    }
+  };
+
+  const handleLocationSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocationSearchQuery(e.target.value);
+  };
+
+  const handleCloseLocationSearch = () => {
+    setShowLocationSearch(false);
+    setLocationSearchQuery('');
   };
 
   const handleAuthClick = () => {
@@ -81,9 +106,37 @@ const Header: React.FC<HeaderProps> = ({ onHomeClick, onSearch, searchQuery }) =
             {/* Right side */}
             <div className="flex items-center space-x-2 sm:space-x-4">
               {/* Location */}
-              <div className="hidden sm:flex items-center space-x-1 text-sm cursor-pointer hover:text-gray-300">
-                <MapPin className="h-4 w-4 flex-shrink-0" />
-                <span className="hidden lg:inline">Guwahati</span>
+              <div className="relative">
+                {showLocationSearch ? (
+                  <div className="flex items-center bg-white rounded-md px-3 py-2 min-w-48">
+                    <MapPin className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+                    <form onSubmit={handleLocationSearchSubmit} className="flex-1">
+                      <input
+                        type="text"
+                        placeholder="Enter your city"
+                        value={locationSearchQuery}
+                        onChange={handleLocationSearchChange}
+                        className="w-full outline-none text-gray-700 text-sm"
+                        autoFocus
+                      />
+                    </form>
+                    <button
+                      type="button"
+                      onClick={handleCloseLocationSearch}
+                      className="ml-2 text-gray-400 hover:text-gray-600"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div 
+                    className="hidden sm:flex items-center space-x-1 text-sm cursor-pointer hover:text-gray-300"
+                    onClick={handleLocationClick}
+                  >
+                    <MapPin className="h-4 w-4 flex-shrink-0" />
+                    <span className="hidden lg:inline">{selectedCity}</span>
+                  </div>
+                )}
               </div>
 
               {/* User Section */}
