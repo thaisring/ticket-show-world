@@ -65,8 +65,8 @@ const PaymentPage: React.FC<PaymentPageProps> = ({
                 <span className="font-medium">{selectedEvent.title}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Date & Time:</span>
-                <span className="font-medium">{showtime.date} at {showtime.time}</span>
+                <span className="text-gray-600">Time & Venue:</span>
+                <span className="font-medium">{showtime.time} at {showtime.venue}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Seats:</span>
