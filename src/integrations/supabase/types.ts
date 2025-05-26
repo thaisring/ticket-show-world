@@ -36,6 +36,66 @@ export type Database = {
         }
         Relationships: []
       }
+      user_shows: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string | null
+          duration_minutes: number | null
+          genre: string
+          id: string
+          image_url: string | null
+          show_date: string
+          show_time: string
+          status: string
+          ticket_price: number
+          title: string
+          total_seats: number
+          updated_at: string
+          user_id: string | null
+          venue: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          genre: string
+          id?: string
+          image_url?: string | null
+          show_date: string
+          show_time: string
+          status?: string
+          ticket_price: number
+          title: string
+          total_seats?: number
+          updated_at?: string
+          user_id?: string | null
+          venue: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number | null
+          genre?: string
+          id?: string
+          image_url?: string | null
+          show_date?: string
+          show_time?: string
+          status?: string
+          ticket_price?: number
+          title?: string
+          total_seats?: number
+          updated_at?: string
+          user_id?: string | null
+          venue?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

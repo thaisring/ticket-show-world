@@ -1,7 +1,14 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navigation: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleListYourShowClick = () => {
+    navigate('/list-your-show');
+  };
+
   return (
     <nav className="bg-[#1f2533] text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -15,7 +22,12 @@ const Navigation: React.FC = () => {
             <a href="#" className="text-sm hover:text-white transition-colors whitespace-nowrap">Activities</a>
           </div>
           <div className="hidden lg:flex space-x-6">
-            <a href="#" className="text-sm hover:text-white transition-colors">ListYourShow</a>
+            <button 
+              onClick={handleListYourShowClick}
+              className="text-sm hover:text-white transition-colors"
+            >
+              ListYourShow
+            </button>
             <a href="#" className="text-sm hover:text-white transition-colors">Corporates</a>
             <a href="#" className="text-sm hover:text-white transition-colors">Offers</a>
             <a href="#" className="text-sm hover:text-white transition-colors">Gift Cards</a>
