@@ -1,10 +1,10 @@
-
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import AppSidebar from '../components/AppSidebar';
 import HomePage from './HomePage';
 import EventDetailsPage from './EventDetailsPage';
 import SeatSelectionPage from './SeatSelectionPage';
+import PaymentPage from './PaymentPage';
 import BookingConfirmationPage from './BookingConfirmationPage';
 import { 
   events, 
@@ -16,7 +16,7 @@ import {
 } from '../data/events';
 import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
-type ViewType = 'home' | 'details' | 'seats' | 'confirmation';
+type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation';
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
@@ -80,7 +80,10 @@ const Index = () => {
       alert("Please select at least one seat.");
       return;
     }
-    
+    setCurrentView('payment');
+  };
+
+  const handlePaymentComplete = () => {
     // Update seat status to booked
     if (selectedEvent && selectedShowtimeIndex >= 0) {
       const showtime = selectedEvent.showtimes[selectedShowtimeIndex];
@@ -145,6 +148,16 @@ const Index = () => {
             onSeatClick={handleSeatClick}
             onBookSeats={handleBookSeats}
             onBackToDetails={() => setCurrentView('details')}
+          />
+        ) : null;
+      case 'payment':
+        return selectedEvent && selectedShowtimeIndex >= 0 ? (
+          <PaymentPage
+            selectedEvent={selectedEvent}
+            selectedShowtimeIndex={selectedShowtimeIndex}
+            selectedSeats={selectedSeats}
+            onBackToSeats={() => setCurrentView('seats')}
+            onPaymentComplete={handlePaymentComplete}
           />
         ) : null;
       case 'confirmation':
