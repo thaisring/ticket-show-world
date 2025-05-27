@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import AppSidebar from '../components/AppSidebar';
@@ -14,7 +15,10 @@ import ExplorePage from './ExplorePage';
 import ShowDetailPage from './ShowDetailPage';
 import BookingPage from './BookingPage';
 import BookingSuccessPage from './BookingSuccessPage';
+import AuthPage from './AuthPage';
 import { useUserShows } from '@/hooks/useUserShows';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   events, 
   liveEventCategories, 
@@ -25,7 +29,7 @@ import {
 } from '../data/events';
 import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
-type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'explore' | 'show-detail' | 'booking' | 'booking-success';
+type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'explore' | 'show-detail' | 'booking' | 'booking-success' | 'auth';
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
@@ -38,6 +42,8 @@ const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
 
   const { userShows } = useUserShows();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Get the selected user show
   const selectedUserShow = selectedShowId ? userShows.find(show => show.id === selectedShowId) : null;
@@ -90,6 +96,11 @@ const Index = () => {
   };
 
   const handleBookNow = () => {
+    // Check if user is authenticated
+    if (!user) {
+      setCurrentView('auth');
+      return;
+    }
     setCurrentView('booking');
   };
 
@@ -98,6 +109,11 @@ const Index = () => {
   };
 
   const handleSelectSeats = (showtimeIndex: number) => {
+    // Check if user is authenticated
+    if (!user) {
+      setCurrentView('auth');
+      return;
+    }
     setSelectedShowtimeIndex(showtimeIndex);
     setSelectedSeats([]);
     setCurrentView('seats');
@@ -150,6 +166,8 @@ const Index = () => {
       setCurrentView('home');
     } else if (currentView === 'explore') {
       setCurrentView('home');
+    } else if (currentView === 'auth') {
+      setCurrentView('home');
     } else {
       handleGoHome();
     }
@@ -161,6 +179,15 @@ const Index = () => {
 
   const handleCategorySelect = (category: CategoryType) => {
     setSelectedCategory(category);
+  };
+
+  const handleListYourShow = () => {
+    // Check if user is authenticated
+    if (!user) {
+      setCurrentView('auth');
+      return;
+    }
+    navigate('/list-your-show');
   };
 
   // See All navigation handlers
@@ -232,6 +259,10 @@ const Index = () => {
             event={selectedEvent}
             onGoHome={handleGoHome}
           />
+        );
+      case 'auth':
+        return (
+          <AuthPage />
         );
       case 'see-all-movies':
         return (
@@ -306,7 +337,11 @@ const Index = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen bg-gray-50 flex w-full">
-        <AppSidebar onCategorySelect={handleCategorySelect} selectedCategory={selectedCategory} />
+        <AppSidebar 
+          onCategorySelect={handleCategorySelect} 
+          selectedCategory={selectedCategory}
+          onListYourShow={handleListYourShow}
+        />
         <SidebarInset>
           <Header 
             onHomeClick={handleGoHome} 
