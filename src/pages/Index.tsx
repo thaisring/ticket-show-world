@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import AppSidebar from '../components/AppSidebar';
@@ -11,6 +10,11 @@ import SeeAllMoviesPage from './SeeAllMoviesPage';
 import SeeAllComedyPage from './SeeAllComedyPage';
 import SeeAllEventsPage from './SeeAllEventsPage';
 import SeeAllPremieresPage from './SeeAllPremieresPage';
+import ExplorePage from './ExplorePage';
+import ShowDetailPage from './ShowDetailPage';
+import BookingPage from './BookingPage';
+import BookingSuccessPage from './BookingSuccessPage';
+import { useUserShows } from '@/hooks/useUserShows';
 import { 
   events, 
   liveEventCategories, 
@@ -21,16 +25,22 @@ import {
 } from '../data/events';
 import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
-type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres';
+type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'explore' | 'show-detail' | 'booking' | 'booking-success';
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<ViewType>('home');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
   const [selectedShowtimeIndex, setSelectedShowtimeIndex] = useState<number>(-1);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
+
+  const { userShows } = useUserShows();
+
+  // Get the selected user show
+  const selectedUserShow = selectedShowId ? userShows.find(show => show.id === selectedShowId) : null;
 
   // Filter events based on search query
   const filteredEvents = useMemo(() => {
@@ -59,11 +69,32 @@ const Index = () => {
   }, [searchQuery]);
 
   const handleViewDetails = (eventId: string) => {
+    // Check if it's a user show
+    const userShow = userShows.find(show => show.id === eventId);
+    if (userShow) {
+      setSelectedShowId(eventId);
+      setCurrentView('show-detail');
+      return;
+    }
+
+    // Otherwise, it's an event
     const event = events.find(e => e.id === eventId);
     if (event) {
       setSelectedEvent(event);
       setCurrentView('details');
     }
+  };
+
+  const handleExploreNow = () => {
+    setCurrentView('explore');
+  };
+
+  const handleBookNow = () => {
+    setCurrentView('booking');
+  };
+
+  const handleBookingComplete = () => {
+    setCurrentView('booking-success');
   };
 
   const handleSelectSeats = (showtimeIndex: number) => {
@@ -107,10 +138,21 @@ const Index = () => {
   const handleGoHome = () => {
     setCurrentView('home');
     setSelectedEvent(null);
+    setSelectedShowId(null);
     setSelectedShowtimeIndex(-1);
     setSelectedSeats([]);
     setSearchQuery('');
     setSelectedCategory('all');
+  };
+
+  const handleGoBack = () => {
+    if (currentView === 'show-detail' || currentView === 'booking' || currentView === 'booking-success') {
+      setCurrentView('home');
+    } else if (currentView === 'explore') {
+      setCurrentView('home');
+    } else {
+      handleGoHome();
+    }
   };
 
   const handleSearch = (query: string) => {
@@ -155,6 +197,40 @@ const Index = () => {
             onSeeAllComedy={handleSeeAllComedy}
             onSeeAllEvents={handleSeeAllEvents}
             onSeeAllPremieres={handleSeeAllPremieres}
+            onExploreNow={handleExploreNow}
+          />
+        );
+      case 'explore':
+        return (
+          <ExplorePage
+            onViewDetails={handleViewDetails}
+            onGoHome={handleGoHome}
+          />
+        );
+      case 'show-detail':
+        return (
+          <ShowDetailPage
+            show={selectedUserShow}
+            event={selectedEvent}
+            onBookNow={handleBookNow}
+            onGoBack={handleGoBack}
+          />
+        );
+      case 'booking':
+        return (
+          <BookingPage
+            show={selectedUserShow}
+            event={selectedEvent}
+            onGoBack={handleGoBack}
+            onPaymentComplete={handleBookingComplete}
+          />
+        );
+      case 'booking-success':
+        return (
+          <BookingSuccessPage
+            show={selectedUserShow}
+            event={selectedEvent}
+            onGoHome={handleGoHome}
           />
         );
       case 'see-all-movies':

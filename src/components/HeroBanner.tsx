@@ -1,7 +1,11 @@
 
 import React from 'react';
 
-const HeroBanner: React.FC = () => {
+interface HeroBannerProps {
+  onExploreNow?: () => void;
+}
+
+const HeroBanner: React.FC<HeroBannerProps> = ({ onExploreNow }) => {
   return (
     <div className="w-full bg-gradient-to-r from-purple-900 via-blue-900 to-indigo-900 relative overflow-hidden">
       <div className="absolute inset-0 bg-black opacity-40"></div>
@@ -13,7 +17,10 @@ const HeroBanner: React.FC = () => {
           <p className="text-xl mb-6 text-shadow">
             Book your favorite movies, events, and shows
           </p>
-          <button className="bg-[#f84464] hover:bg-[#d83454] text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-lg">
+          <button 
+            onClick={onExploreNow}
+            className="bg-[#f84464] hover:bg-[#d83454] text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors shadow-lg"
+          >
             Explore Now
           </button>
         </div>

@@ -19,12 +19,13 @@ interface HomePageProps {
   onSeeAllComedy?: () => void;
   onSeeAllEvents?: () => void;
   onSeeAllPremieres?: () => void;
+  onExploreNow?: () => void;
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
   return (
     <div className="min-h-screen bg-gray-50">
-      <HeroBanner />
+      <HeroBanner onExploreNow={props.onExploreNow} />
       
       {/* Show all community shows when no specific category is selected */}
       {props.selectedCategory === 'all' && (
