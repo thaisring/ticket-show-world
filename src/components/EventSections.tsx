@@ -14,6 +14,10 @@ interface EventSectionsProps {
   liveEventCategories: LiveEventCategory[];
   premieres: any[];
   onViewDetails: (eventId: string) => void;
+  onSeeAllMovies?: () => void;
+  onSeeAllComedy?: () => void;
+  onSeeAllEvents?: () => void;
+  onSeeAllPremieres?: () => void;
 }
 
 const EventSections: React.FC<EventSectionsProps> = ({
@@ -24,7 +28,11 @@ const EventSections: React.FC<EventSectionsProps> = ({
   filteredPopularEvents,
   liveEventCategories,
   premieres,
-  onViewDetails
+  onViewDetails,
+  onSeeAllMovies,
+  onSeeAllComedy,
+  onSeeAllEvents,
+  onSeeAllPremieres
 }) => {
   const getCategoryContent = () => {
     switch (selectedCategory) {
@@ -134,11 +142,18 @@ const EventSections: React.FC<EventSectionsProps> = ({
                 <h2 className="text-2xl font-bold text-gray-900">
                   {searchQuery ? 'Movies' : 'Recommended Movies'}
                 </h2>
-                {!searchQuery && <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>}
+                {!searchQuery && onSeeAllMovies && (
+                  <button 
+                    onClick={onSeeAllMovies}
+                    className="text-[#f84464] font-medium hover:underline"
+                  >
+                    See All ›
+                  </button>
+                )}
               </div>
               {filteredEvents.length > 0 ? (
                 <div className="flex gap-4 overflow-x-auto pb-4">
-                  {filteredEvents.map(event => (
+                  {filteredEvents.slice(0, 6).map(event => (
                     <EventCard 
                       key={event.id} 
                       event={event} 
@@ -159,10 +174,17 @@ const EventSections: React.FC<EventSectionsProps> = ({
                     <h2 className="text-2xl font-bold text-gray-900">Premieres</h2>
                     <p className="text-gray-600 text-sm">Brand new releases every Friday</p>
                   </div>
-                  <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>
+                  {onSeeAllPremieres && (
+                    <button 
+                      onClick={onSeeAllPremieres}
+                      className="text-[#f84464] font-medium hover:underline"
+                    >
+                      See All ›
+                    </button>
+                  )}
                 </div>
                 <div className="flex gap-4 overflow-x-auto pb-4">
-                  {premieres.map((premiere, index) => (
+                  {premieres.slice(0, 5).map((premiere, index) => (
                     <PremiereCard key={index} premiere={premiere} />
                   ))}
                 </div>
@@ -176,11 +198,18 @@ const EventSections: React.FC<EventSectionsProps> = ({
                   <h2 className="text-2xl font-bold text-gray-900">
                     {searchQuery ? 'Comedy Shows' : 'Laughter Therapy'}
                   </h2>
-                  {!searchQuery && <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>}
+                  {!searchQuery && onSeeAllComedy && (
+                    <button 
+                      onClick={onSeeAllComedy}
+                      className="text-[#f84464] font-medium hover:underline"
+                    >
+                      See All ›
+                    </button>
+                  )}
                 </div>
                 {filteredComedyEvents.length > 0 ? (
                   <div className="flex gap-4 overflow-x-auto pb-4">
-                    {filteredComedyEvents.map(event => (
+                    {filteredComedyEvents.slice(0, 6).map(event => (
                       <EventCard 
                         key={event.id} 
                         event={event} 
@@ -199,11 +228,18 @@ const EventSections: React.FC<EventSectionsProps> = ({
             <section className="max-w-6xl mx-auto px-5 py-8">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-bold text-gray-900">Popular Events</h2>
-                {!searchQuery && <a href="#" className="text-[#f84464] font-medium hover:underline">See All ›</a>}
+                {!searchQuery && onSeeAllEvents && (
+                  <button 
+                    onClick={onSeeAllEvents}
+                    className="text-[#f84464] font-medium hover:underline"
+                  >
+                    See All ›
+                  </button>
+                )}
               </div>
               {filteredPopularEvents.length > 0 ? (
                 <div className="flex gap-4 overflow-x-auto pb-4">
-                  {filteredPopularEvents.map(event => (
+                  {filteredPopularEvents.slice(0, 6).map(event => (
                     <EventCard 
                       key={event.id} 
                       event={event} 

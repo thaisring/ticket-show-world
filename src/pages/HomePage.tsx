@@ -15,6 +15,10 @@ interface HomePageProps {
   liveEventCategories: LiveEventCategory[];
   premieres: any[];
   onViewDetails: (eventId: string) => void;
+  onSeeAllMovies?: () => void;
+  onSeeAllComedy?: () => void;
+  onSeeAllEvents?: () => void;
+  onSeeAllPremieres?: () => void;
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
@@ -35,7 +39,13 @@ const HomePage: React.FC<HomePageProps> = (props) => {
         />
       )}
       
-      <EventSections {...props} />
+      <EventSections 
+        {...props}
+        onSeeAllMovies={props.onSeeAllMovies}
+        onSeeAllComedy={props.onSeeAllComedy}
+        onSeeAllEvents={props.onSeeAllEvents}
+        onSeeAllPremieres={props.onSeeAllPremieres}
+      />
     </div>
   );
 };

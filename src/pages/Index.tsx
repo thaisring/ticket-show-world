@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import AppSidebar from '../components/AppSidebar';
@@ -6,6 +7,10 @@ import EventDetailsPage from './EventDetailsPage';
 import SeatSelectionPage from './SeatSelectionPage';
 import PaymentPage from './PaymentPage';
 import BookingConfirmationPage from './BookingConfirmationPage';
+import SeeAllMoviesPage from './SeeAllMoviesPage';
+import SeeAllComedyPage from './SeeAllComedyPage';
+import SeeAllEventsPage from './SeeAllEventsPage';
+import SeeAllPremieresPage from './SeeAllPremieresPage';
 import { 
   events, 
   liveEventCategories, 
@@ -16,7 +21,7 @@ import {
 } from '../data/events';
 import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
-type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation';
+type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres';
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
@@ -116,6 +121,23 @@ const Index = () => {
     setSelectedCategory(category);
   };
 
+  // See All navigation handlers
+  const handleSeeAllMovies = () => {
+    setCurrentView('see-all-movies');
+  };
+
+  const handleSeeAllComedy = () => {
+    setCurrentView('see-all-comedy');
+  };
+
+  const handleSeeAllEvents = () => {
+    setCurrentView('see-all-events');
+  };
+
+  const handleSeeAllPremieres = () => {
+    setCurrentView('see-all-premieres');
+  };
+
   const renderCurrentView = () => {
     switch (currentView) {
       case 'home':
@@ -129,6 +151,37 @@ const Index = () => {
             liveEventCategories={liveEventCategories}
             premieres={premieres}
             onViewDetails={handleViewDetails}
+            onSeeAllMovies={handleSeeAllMovies}
+            onSeeAllComedy={handleSeeAllComedy}
+            onSeeAllEvents={handleSeeAllEvents}
+            onSeeAllPremieres={handleSeeAllPremieres}
+          />
+        );
+      case 'see-all-movies':
+        return (
+          <SeeAllMoviesPage
+            onViewDetails={handleViewDetails}
+            onGoHome={handleGoHome}
+          />
+        );
+      case 'see-all-comedy':
+        return (
+          <SeeAllComedyPage
+            onViewDetails={handleViewDetails}
+            onGoHome={handleGoHome}
+          />
+        );
+      case 'see-all-events':
+        return (
+          <SeeAllEventsPage
+            onViewDetails={handleViewDetails}
+            onGoHome={handleGoHome}
+          />
+        );
+      case 'see-all-premieres':
+        return (
+          <SeeAllPremieresPage
+            onGoHome={handleGoHome}
           />
         );
       case 'details':
