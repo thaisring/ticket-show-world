@@ -5,15 +5,21 @@ import UserShowCard from './UserShowCard';
 
 interface UserShowsSectionProps {
   onViewDetails: (showId: string) => void;
+  genre?: string;
+  title?: string;
 }
 
-const UserShowsSection: React.FC<UserShowsSectionProps> = ({ onViewDetails }) => {
-  const { userShows, loading, error } = useUserShows();
+const UserShowsSection: React.FC<UserShowsSectionProps> = ({ 
+  onViewDetails, 
+  genre,
+  title = "Community Shows" 
+}) => {
+  const { userShows, loading, error } = useUserShows(genre);
 
   if (loading) {
     return (
       <section className="py-8 px-4 max-w-7xl mx-auto">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6">Community Shows</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{title}</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, index) => (
             <div key={index} className="bg-gray-200 rounded-lg h-64 animate-pulse"></div>
@@ -24,15 +30,20 @@ const UserShowsSection: React.FC<UserShowsSectionProps> = ({ onViewDetails }) =>
   }
 
   if (error || userShows.length === 0) {
-    return null;
+    return genre && genre !== 'all' ? (
+      <section className="py-8 px-4 max-w-7xl mx-auto">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">{title}</h2>
+        <p className="text-gray-600">No shows found in this genre.</p>
+      </section>
+    ) : null;
   }
 
   return (
     <section className="py-8 px-4 max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Community Shows</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{title}</h2>
         <p className="text-sm text-gray-600">
-          Shows listed by our community members
+          {userShows.length} show{userShows.length !== 1 ? 's' : ''} available
         </p>
       </div>
       

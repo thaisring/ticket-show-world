@@ -21,7 +21,7 @@ export interface UserShow {
   updated_at: string;
 }
 
-export const useUserShows = () => {
+export const useUserShows = (genre?: string) => {
   const [userShows, setUserShows] = useState<UserShow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,11 +29,16 @@ export const useUserShows = () => {
   useEffect(() => {
     const fetchUserShows = async () => {
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('user_shows')
           .select('*')
-          .eq('status', 'approved')
           .order('created_at', { ascending: false });
+
+        if (genre && genre !== 'all') {
+          query = query.eq('genre', genre);
+        }
+
+        const { data, error } = await query;
 
         if (error) throw error;
 
@@ -47,7 +52,7 @@ export const useUserShows = () => {
     };
 
     fetchUserShows();
-  }, []);
+  }, [genre]);
 
   return { userShows, loading, error };
 };
