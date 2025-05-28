@@ -31,7 +31,7 @@ const LiveEventCategoryPage: React.FC<LiveEventCategoryPageProps> = ({
       case 'kids':
         return {
           title: 'Kids Shows',
-          events: events.filter(e => e.genre.toLowerCase().includes('family') || e.genre.toLowerCase().includes('kids')),
+          events: events.filter(e => e.genre?.toLowerCase().includes('family') || e.genre?.toLowerCase().includes('kids')),
           genre: 'Family'
         };
       case 'music shows':
@@ -43,16 +43,18 @@ const LiveEventCategoryPage: React.FC<LiveEventCategoryPageProps> = ({
       case 'art & crafts':
         return {
           title: 'Art & Crafts',
-          events: events.filter(e => e.genre.toLowerCase().includes('art')),
+          events: events.filter(e => e.genre?.toLowerCase().includes('art')),
           genre: 'Workshop'
         };
       case 'workshop & more':
         return {
           title: 'Workshops & More',
-          events: [...events, ...popularEvents].filter(e => 
-            e.genre?.toLowerCase().includes('workshop') || 
-            e.category?.toLowerCase().includes('workshop')
-          ),
+          events: [...events, ...popularEvents].filter(e => {
+            const eventGenre = 'genre' in e ? e.genre : '';
+            const eventCategory = 'category' in e ? e.category : '';
+            return eventGenre?.toLowerCase().includes('workshop') || 
+                   eventCategory?.toLowerCase().includes('workshop');
+          }),
           genre: 'Workshop'
         };
       default:
@@ -98,7 +100,9 @@ const LiveEventCategoryPage: React.FC<LiveEventCategoryPageProps> = ({
           const dateB = 'show_date' in b ? new Date(b.show_date) : new Date();
           return dateA.getTime() - dateB.getTime();
         case 'genre':
-          return a.genre.localeCompare(b.genre);
+          const genreA = 'genre' in a ? a.genre : '';
+          const genreB = 'genre' in b ? b.genre : '';
+          return genreA.localeCompare(genreB);
         default:
           return 0;
       }
