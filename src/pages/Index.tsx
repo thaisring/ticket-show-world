@@ -16,6 +16,7 @@ import ShowDetailPage from './ShowDetailPage';
 import BookingPage from './BookingPage';
 import BookingSuccessPage from './BookingSuccessPage';
 import AuthPage from './AuthPage';
+import LiveEventCategoryPage from './LiveEventCategoryPage';
 import { useUserShows } from '@/hooks/useUserShows';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +30,7 @@ import {
 } from '../data/events';
 import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
-type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'explore' | 'show-detail' | 'booking' | 'booking-success' | 'auth';
+type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'explore' | 'show-detail' | 'booking' | 'booking-success' | 'auth' | 'live-event-category';
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
@@ -40,6 +41,7 @@ const Index = () => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>('all');
+  const [selectedLiveEventCategory, setSelectedLiveEventCategory] = useState<string>('');
 
   const { userShows } = useUserShows();
   const { user } = useAuth();
@@ -93,6 +95,11 @@ const Index = () => {
 
   const handleExploreNow = () => {
     setCurrentView('explore');
+  };
+
+  const handleLiveEventCategoryClick = (categoryTitle: string) => {
+    setSelectedLiveEventCategory(categoryTitle);
+    setCurrentView('live-event-category');
   };
 
   const handleBookNow = () => {
@@ -159,12 +166,13 @@ const Index = () => {
     setSelectedSeats([]);
     setSearchQuery('');
     setSelectedCategory('all');
+    setSelectedLiveEventCategory('');
   };
 
   const handleGoBack = () => {
     if (currentView === 'show-detail' || currentView === 'booking' || currentView === 'booking-success') {
       setCurrentView('home');
-    } else if (currentView === 'explore') {
+    } else if (currentView === 'explore' || currentView === 'live-event-category') {
       setCurrentView('home');
     } else if (currentView === 'auth') {
       setCurrentView('home');
@@ -225,6 +233,15 @@ const Index = () => {
             onSeeAllEvents={handleSeeAllEvents}
             onSeeAllPremieres={handleSeeAllPremieres}
             onExploreNow={handleExploreNow}
+            onLiveEventCategoryClick={handleLiveEventCategoryClick}
+          />
+        );
+      case 'live-event-category':
+        return (
+          <LiveEventCategoryPage
+            categoryTitle={selectedLiveEventCategory}
+            onViewDetails={handleViewDetails}
+            onGoHome={handleGoHome}
           />
         );
       case 'explore':

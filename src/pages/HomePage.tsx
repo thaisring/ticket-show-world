@@ -20,6 +20,7 @@ interface HomePageProps {
   onSeeAllEvents?: () => void;
   onSeeAllPremieres?: () => void;
   onExploreNow?: () => void;
+  onLiveEventCategoryClick?: (categoryTitle: string) => void;
 }
 
 const HomePage: React.FC<HomePageProps> = (props) => {
@@ -46,6 +47,7 @@ const HomePage: React.FC<HomePageProps> = (props) => {
         onSeeAllComedy={props.onSeeAllComedy}
         onSeeAllEvents={props.onSeeAllEvents}
         onSeeAllPremieres={props.onSeeAllPremieres}
+        onLiveEventCategoryClick={props.onLiveEventCategoryClick}
       />
     </div>
   );

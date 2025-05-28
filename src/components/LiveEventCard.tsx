@@ -10,9 +10,10 @@ interface LiveEventCategory {
 
 interface LiveEventCardProps {
   category: LiveEventCategory;
+  onClick?: () => void;
 }
 
-const LiveEventCard: React.FC<LiveEventCardProps> = ({ category }) => {
+const LiveEventCard: React.FC<LiveEventCardProps> = ({ category, onClick }) => {
   return (
     <div
       className="aspect-square rounded-xl p-4 text-white cursor-pointer transition-transform hover:scale-105 shadow-md"
@@ -23,6 +24,7 @@ const LiveEventCard: React.FC<LiveEventCardProps> = ({ category }) => {
         backgroundPosition: 'bottom right',
         backgroundRepeat: 'no-repeat'
       }}
+      onClick={onClick}
     >
       <div className="flex flex-col justify-start h-full">
         <h3 className="text-lg font-bold uppercase mb-1 text-shadow">

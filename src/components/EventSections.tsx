@@ -18,6 +18,7 @@ interface EventSectionsProps {
   onSeeAllComedy?: () => void;
   onSeeAllEvents?: () => void;
   onSeeAllPremieres?: () => void;
+  onLiveEventCategoryClick?: (categoryTitle: string) => void;
 }
 
 const EventSections: React.FC<EventSectionsProps> = ({
@@ -32,7 +33,8 @@ const EventSections: React.FC<EventSectionsProps> = ({
   onSeeAllMovies,
   onSeeAllComedy,
   onSeeAllEvents,
-  onSeeAllPremieres
+  onSeeAllPremieres,
+  onLiveEventCategoryClick
 }) => {
   const getCategoryContent = () => {
     switch (selectedCategory) {
@@ -130,7 +132,11 @@ const EventSections: React.FC<EventSectionsProps> = ({
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">The Best Of Live Events</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   {liveEventCategories.map((category, index) => (
-                    <LiveEventCard key={index} category={category} />
+                    <LiveEventCard 
+                      key={index} 
+                      category={category} 
+                      onClick={() => onLiveEventCategoryClick?.(category.title)}
+                    />
                   ))}
                 </div>
               </section>
