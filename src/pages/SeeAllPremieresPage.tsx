@@ -5,9 +5,10 @@ import { premieres } from '../data/events';
 
 interface SeeAllPremieresPageProps {
   onGoHome: () => void;
+  onViewDetails?: (eventId: string) => void;
 }
 
-const SeeAllPremieresPage: React.FC<SeeAllPremieresPageProps> = ({ onGoHome }) => {
+const SeeAllPremieresPage: React.FC<SeeAllPremieresPageProps> = ({ onGoHome, onViewDetails }) => {
   const [sortBy, setSortBy] = useState<'title' | 'language'>('title');
   const [filterLanguage, setFilterLanguage] = useState<string>('all');
 
@@ -27,8 +28,9 @@ const SeeAllPremieresPage: React.FC<SeeAllPremieresPageProps> = ({ onGoHome }) =
     });
 
   const handlePremiereClick = (index: number) => {
-    // For now, just show an alert. This can be expanded to show premiere details
-    alert(`Clicked on: ${filteredAndSortedPremieres[index].title}`);
+    if (onViewDetails) {
+      onViewDetails(`premiere-${index}`);
+    }
   };
 
   return (

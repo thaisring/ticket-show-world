@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import AppSidebar from '../components/AppSidebar';
@@ -11,6 +10,7 @@ import SeeAllMoviesPage from './SeeAllMoviesPage';
 import SeeAllComedyPage from './SeeAllComedyPage';
 import SeeAllEventsPage from './SeeAllEventsPage';
 import SeeAllPremieresPage from './SeeAllPremieresPage';
+import PremiereDetailPage from './PremiereDetailPage';
 import ExplorePage from './ExplorePage';
 import ShowDetailPage from './ShowDetailPage';
 import BookingPage from './BookingPage';
@@ -30,13 +30,14 @@ import {
 } from '../data/events';
 import { SidebarProvider, SidebarInset } from '../components/ui/sidebar';
 
-type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'explore' | 'show-detail' | 'booking' | 'booking-success' | 'auth' | 'live-event-category';
+type ViewType = 'home' | 'details' | 'seats' | 'payment' | 'confirmation' | 'see-all-movies' | 'see-all-comedy' | 'see-all-events' | 'see-all-premieres' | 'premiere-detail' | 'explore' | 'show-detail' | 'booking' | 'booking-success' | 'auth' | 'live-event-category';
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<ViewType>('home');
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
+  const [selectedPremiereIndex, setSelectedPremiereIndex] = useState<number>(-1);
   const [selectedShowtimeIndex, setSelectedShowtimeIndex] = useState<number>(-1);
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -50,7 +51,9 @@ const Index = () => {
   // Get the selected user show
   const selectedUserShow = selectedShowId ? userShows.find(show => show.id === selectedShowId) : null;
 
-  // Filter events based on search query
+  // Get the selected premiere
+  const selectedPremiere = selectedPremiereIndex >= 0 ? premieres[selectedPremiereIndex] : null;
+
   const filteredEvents = useMemo(() => {
     if (!searchQuery.trim()) return events;
     return events.filter(event => 
@@ -77,6 +80,14 @@ const Index = () => {
   }, [searchQuery]);
 
   const handleViewDetails = (eventId: string) => {
+    // Check if it's a premiere
+    if (eventId.startsWith('premiere-')) {
+      const index = parseInt(eventId.replace('premiere-', ''));
+      setSelectedPremiereIndex(index);
+      setCurrentView('premiere-detail');
+      return;
+    }
+
     // Check if it's a user show
     const userShow = userShows.find(show => show.id === eventId);
     if (userShow) {
@@ -162,6 +173,7 @@ const Index = () => {
     setCurrentView('home');
     setSelectedEvent(null);
     setSelectedShowId(null);
+    setSelectedPremiereIndex(-1);
     setSelectedShowtimeIndex(-1);
     setSelectedSeats([]);
     setSearchQuery('');
@@ -170,7 +182,7 @@ const Index = () => {
   };
 
   const handleGoBack = () => {
-    if (currentView === 'show-detail' || currentView === 'booking' || currentView === 'booking-success') {
+    if (currentView === 'show-detail' || currentView === 'booking' || currentView === 'booking-success' || currentView === 'premiere-detail') {
       setCurrentView('home');
     } else if (currentView === 'explore' || currentView === 'live-event-category') {
       setCurrentView('home');
@@ -251,6 +263,13 @@ const Index = () => {
             onGoHome={handleGoHome}
           />
         );
+      case 'premiere-detail':
+        return selectedPremiere ? (
+          <PremiereDetailPage
+            premiere={selectedPremiere}
+            onGoBack={handleGoBack}
+          />
+        ) : null;
       case 'show-detail':
         return (
           <ShowDetailPage
@@ -306,6 +325,7 @@ const Index = () => {
         return (
           <SeeAllPremieresPage
             onGoHome={handleGoHome}
+            onViewDetails={handleViewDetails}
           />
         );
       case 'details':
