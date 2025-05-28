@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Film, Play, Calendar, Trophy, Activity, Tv, Home } from 'lucide-react';
+import { Film, Play, Calendar, Trophy, Activity, Tv, Home, Plus } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  SidebarFooter,
 } from './ui/sidebar';
 
 type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' | 'activities';
@@ -19,9 +20,10 @@ type CategoryType = 'all' | 'movies' | 'stream' | 'events' | 'plays' | 'sports' 
 interface AppSidebarProps {
   onCategorySelect: (category: CategoryType) => void;
   selectedCategory: CategoryType;
+  onListYourShow: () => void;
 }
 
-const AppSidebar: React.FC<AppSidebarProps> = ({ onCategorySelect, selectedCategory }) => {
+const AppSidebar: React.FC<AppSidebarProps> = ({ onCategorySelect, selectedCategory, onListYourShow }) => {
   const menuItems = [
     {
       title: "Home",
@@ -93,6 +95,21 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ onCategorySelect, selectedCateg
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <button
+                onClick={onListYourShow}
+                className="w-full flex items-center gap-2 px-2 py-2 text-left hover:bg-gray-100 rounded-md transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                <span>List Your Show</span>
+              </button>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 };
