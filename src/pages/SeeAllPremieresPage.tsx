@@ -26,6 +26,11 @@ const SeeAllPremieresPage: React.FC<SeeAllPremieresPageProps> = ({ onGoHome }) =
       }
     });
 
+  const handlePremiereClick = (index: number) => {
+    // For now, just show an alert. This can be expanded to show premiere details
+    alert(`Clicked on: ${filteredAndSortedPremieres[index].title}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-5">
@@ -72,7 +77,11 @@ const SeeAllPremieresPage: React.FC<SeeAllPremieresPageProps> = ({ onGoHome }) =
         {/* Premieres Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {filteredAndSortedPremieres.map((premiere, index) => (
-            <PremiereCard key={index} premiere={premiere} />
+            <PremiereCard 
+              key={index} 
+              premiere={premiere} 
+              onClick={() => handlePremiereClick(index)}
+            />
           ))}
         </div>
 

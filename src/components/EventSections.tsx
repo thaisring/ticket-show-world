@@ -1,4 +1,3 @@
-
 import React from 'react';
 import EventCard from './EventCard';
 import LiveEventCard from './LiveEventCard';
@@ -191,7 +190,11 @@ const EventSections: React.FC<EventSectionsProps> = ({
                 </div>
                 <div className="flex gap-4 overflow-x-auto pb-4">
                   {premieres.slice(0, 5).map((premiere, index) => (
-                    <PremiereCard key={index} premiere={premiere} />
+                    <PremiereCard 
+                      key={index} 
+                      premiere={premiere} 
+                      onClick={() => onViewDetails(`premiere-${index}`)}
+                    />
                   ))}
                 </div>
               </section>

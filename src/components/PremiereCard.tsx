@@ -10,11 +10,15 @@ interface Premiere {
 
 interface PremiereCardProps {
   premiere: Premiere;
+  onClick?: () => void;
 }
 
-const PremiereCard: React.FC<PremiereCardProps> = ({ premiere }) => {
+const PremiereCard: React.FC<PremiereCardProps> = ({ premiere, onClick }) => {
   return (
-    <div className="relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow min-w-[220px] max-w-[220px] flex-shrink-0">
+    <div 
+      className="relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow min-w-[220px] max-w-[220px] flex-shrink-0 cursor-pointer"
+      onClick={onClick}
+    >
       <div className="relative">
         <img
           src={premiere.poster}
