@@ -12,7 +12,7 @@ interface AppState {
   setSelectedShowId: (id: string | null) => void;
   setSelectedPremiereIndex: (index: number) => void;
   setSelectedShowtimeIndex: (index: number) => void;
-  setSelectedSeats: (seats: string[]) => void;
+  setSelectedSeats: React.Dispatch<React.SetStateAction<string[]>>;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: CategoryType) => void;
   setSelectedLiveEventCategory: (category: string) => void;
