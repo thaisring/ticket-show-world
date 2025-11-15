@@ -60,6 +60,7 @@ const AuthPage = () => {
           email: formData.email,
           password: formData.password,
           options: {
+            emailRedirectTo: `${window.location.origin}/`,
             data: {
               full_name: formData.fullName,
               phone: formData.phone,
